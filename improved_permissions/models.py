@@ -25,14 +25,14 @@ class UserRole(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='roles',
-        verbose_name='Usuário'
+        verbose_name='Users'
     )
 
     permissions = models.ManyToManyField(
         Permission,
         through='RolePermission',
         related_name='roles',
-        verbose_name='Permissões'
+        verbose_name='Permissions'
     )
 
     role_class = models.CharField(max_length=256)
