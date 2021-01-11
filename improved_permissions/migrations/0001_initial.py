@@ -9,8 +9,8 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('auth', '0009_alter_user_last_name_max_length'),
         ('contenttypes', '0002_remove_content_type_name'),
+        ('auth', '0012_alter_user_first_name_max_length'),
     ]
 
     operations = [
@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
                 ('role_class', models.CharField(max_length=256)),
                 ('object_id', models.PositiveIntegerField(null=True)),
                 ('content_type', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='contenttypes.ContentType')),
-                ('permissions', models.ManyToManyField(related_name='roles', through='improved_permissions.RolePermission', to='auth.Permission', verbose_name='Permissões')),
+                ('permissions', models.ManyToManyField(related_name='roles', through='improved_permissions.RolePermission', to='auth.Permission', verbose_name='Permissions')),
             ],
             options={
                 'verbose_name_plural': 'Role Instances',
