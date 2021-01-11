@@ -23,7 +23,7 @@ class Book(RoleMixin, models.Model):
     library = models.ForeignKey(Library, on_delete=models.PROTECT)
 
     class Meta:
-        permissions = [('view_book', 'View Book'), ('review', 'Review'),]
+        permissions = [('viewz_book', 'View Book'), ('review', 'Review'),]
 
     class RoleOptions:
         permission_parents = ['library']
@@ -36,7 +36,7 @@ class Chapter(RoleMixin, models.Model):
     cited_by = models.ForeignKey(Book, blank=True, null=True, on_delete=models.PROTECT, related_name='citations')
 
     class Meta:
-        permissions = [('view_chapter', 'View Chapter'),]
+        permissions = [('viewz_chapter', 'View Chapter'),]
 
     class RoleOptions:
         permission_parents = ['book', 'cited_by']
@@ -47,7 +47,7 @@ class Paragraph(RoleMixin, models.Model):
     content = models.TextField()
 
     class Meta:
-        permissions = [('view_paragraph', 'View Paragraph'),]
+        permissions = [('viewz_paragraph', 'View Paragraph'),]
 
     class RoleOptions:
         permission_parents = ['chapter']
