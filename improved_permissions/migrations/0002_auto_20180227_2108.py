@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('improved_permissions', '0001_initial'),
-        ('auth', '0009_alter_user_last_name_max_length'),
+        ('auth', '0012_alter_user_first_name_max_length'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
