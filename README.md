@@ -7,12 +7,13 @@
 
 ---
 
-## Warning
-This repository is archived and there will be no future maintenance. However, it is very stable and very useful for small django projects.
+## Overview
+
+This is a fork of the original Django Improved Permissions package [here](https://github.com/s-sys/django-improved-permissions) that is maintained by Pluto Biosciences.
 
 ---
 
-Django Improved Permissions (DIP) is a django application made to make django's default permission system more robust. Here are some highlights:
+Django Improved Permissions (DIP) is a Django application made to make Django's default permission system more robust. Here are some highlights:
 
 * Object-level Permissions
 * Role Assignment
@@ -22,9 +23,19 @@ Django Improved Permissions (DIP) is a django application made to make django's 
 
 ## Documentation
 
-The full documentation is available in our page in Read the Docs.
+Documentation for the original package is available [here](http://django-improved-permissions.readthedocs.io/en/latest/).
 
-http://django-improved-permissions.readthedocs.io/en/latest/
+## Running locally
+
+### First time set-up
+
+Create a virtual environment in the top-level directory with `python3 -m venv env` and activate it with `source env/bin/activate`. Install requirements with `pip install -r permproject/requirements/reqs.txt`.
+
+Make the test script executable with `chmod +x test.sh`.
+
+### Running tests 
+
+To run tests with coverage, run `./test.sh`. To just run the test suite, run `./manage.py test`.
 
 ## Contributing
 

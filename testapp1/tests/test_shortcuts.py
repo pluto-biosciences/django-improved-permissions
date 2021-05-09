@@ -34,14 +34,14 @@ class Secretary(Role):
     allow = ['testapp1.delete_user']
 
 
-class SubCoordenator(Role):
-    verbose_name = "Sub Coordenator"
+class SubCoordinator(Role):
+    verbose_name = "Sub Coordinator"
     models = ALL_MODELS
     inherit_allow = ['testapp1.change_user']
 
 
-class Coordenator(Role):
-    verbose_name = "Coordenator"
+class Coordinator(Role):
+    verbose_name = "Coordinator"
     models = ALL_MODELS
     inherit_deny = ['testapp1.change_user']
 
@@ -60,8 +60,8 @@ class ShortcutsTest(TestCase):
         RoleManager.register_role(Advisor)
         RoleManager.register_role(Teacher)
         RoleManager.register_role(Secretary)
-        RoleManager.register_role(SubCoordenator)
-        RoleManager.register_role(Coordenator)
+        RoleManager.register_role(SubCoordinator)
+        RoleManager.register_role(Coordinator)
         RoleManager.register_role(UniqueOwner)
 
         self.john = MyUser.objects.create(username="john")
@@ -82,17 +82,17 @@ class ShortcutsTest(TestCase):
 
     def test_assign_roles_allmodels(self):
         """ test if the roles using ALL_MODELS work fine """
-        assign_role(self.john, Coordenator)
+        assign_role(self.john, Coordenitor)
 
         # Trying to assign a non-object role using a object
         with self.assertRaises(InvalidRoleAssignment):
-            assign_role(self.john, Coordenator, self.bob)
+            assign_role(self.john, Coordinator, self.bob)
 
         # Trying to assign a object role without object
         with self.assertRaises(InvalidRoleAssignment):
             assign_role(self.john, Advisor)
 
-        users_list = get_users(Coordenator)
+        users_list = get_users(Coordinator)
         self.assertEqual(list(users_list), [self.john])
 
     def test_assign_roles_unique(self):
@@ -149,10 +149,10 @@ class ShortcutsTest(TestCase):
 
     def test_has_role(self):
         """ test if has_role method works fine """
-        assign_role(self.john, Coordenator)
+        assign_role(self.john, Coordinator)
         assign_role(self.john, Advisor, self.bob)
 
-        self.assertTrue(has_role(self.john, Coordenator))
+        self.assertTrue(has_role(self.john, Coordinator))
         self.assertTrue(has_role(self.john, Advisor, self.bob))
 
         with self.assertRaises(NotAllowed):
@@ -168,12 +168,12 @@ class ShortcutsTest(TestCase):
         self.assertTrue(has_permission(self.mike, 'testapp1.delete_user', self.bob))
         self.assertFalse(has_permission(self.mike, 'testapp1.add_user', self.bob))
 
-        assign_role(self.bob, SubCoordenator)
+        assign_role(self.bob, SubCoordinator)
         self.assertTrue(has_permission(self.bob, 'testapp1.change_user'))
         self.assertTrue(has_permission(self.bob, 'testapp1.change_user', self.julie))
         self.assertFalse(has_permission(self.bob, 'testapp1.add_user', self.julie))
 
-        assign_role(self.julie, Coordenator)
+        assign_role(self.julie, Coordinator)
         self.assertTrue(has_permission(self.julie, 'testapp1.add_user'))
         self.assertTrue(has_permission(self.julie, 'testapp1.add_user', self.bob))
         self.assertFalse(has_permission(self.julie, 'testapp1.change_user', self.bob))
@@ -185,13 +185,13 @@ class ShortcutsTest(TestCase):
 
     def test_template_tags(self):
         """ test if template tags work fine """
-        assign_role(self.julie, Coordenator)
+        assign_role(self.julie, Coordinator)
 
         self.assertTrue(tg_has_perm(self.julie, 'testapp1.add_user', self.bob))
         self.assertFalse(tg_has_perm(self.julie, 'testapp1.change_user', self.bob))
 
         # Check for non-object related role.
-        self.assertEqual(tg_get_role(self.julie), 'Coordenator')
+        self.assertEqual(tg_get_role(self.julie), 'Coordinator')
 
         # Check of object related role.
         assign_role(self.julie, Secretary, self.bob)
@@ -211,16 +211,16 @@ class ShortcutsTest(TestCase):
         users_list = get_users(Teacher)
         self.assertEqual(list(users_list), [])
 
-        assign_role(self.julie, Coordenator)
+        assign_role(self.julie, Coordinator)
         self.assertTrue(has_permission(self.julie, 'testapp1.add_user'))
         remove_role(self.julie)
         self.assertFalse(has_permission(self.julie, 'testapp1.add_user'))
 
         # Remove all roles from the project.
         assign_roles([self.john, self.mike], Teacher, self.bob)
-        remove_all(Coordenator)
+        remove_all(Coordinator)
         remove_all(Teacher)
-        self.assertEqual(list(get_users(Coordenator)), [])
+        self.assertEqual(list(get_users(Coordinator)), [])
         self.assertEqual(list(get_users(Teacher)), [])
 
     def test_assign_permissions(self):
@@ -257,14 +257,14 @@ class ShortcutsTest(TestCase):
             assign_permission(self.mike, Secretary, 'testapp1.add_user', access=False)
 
         # Expliciting a permission to a role using ALL_MODELS.
-        assign_role(self.julie, SubCoordenator)
+        assign_role(self.julie, SubCoordinator)
         self.assertFalse(has_permission(self.julie, 'testapp1.delete_user'))
 
-        assign_permission(self.julie, SubCoordenator, 'testapp1.delete_user', access=True)
+        assign_permission(self.julie, SubCoordinator, 'testapp1.delete_user', access=True)
         self.assertTrue(has_permission(self.julie, 'testapp1.delete_user'))
-        
+
         # Other permissions are still False.
         self.assertFalse(has_permission(self.julie, 'testapp1.add_user'))
 
-        remove_role(self.julie, SubCoordenator)
+        remove_role(self.julie, SubCoordinator)
         self.assertFalse(has_permission(self.julie, 'testapp1.delete_user'))
