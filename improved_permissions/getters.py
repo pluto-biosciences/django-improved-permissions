@@ -146,3 +146,23 @@ def get_roles(user, obj=None):
     # Transform the string representations
     # into role classes and return as list.
     return [get_roleclass(ur_obj.role_class) for ur_obj in query]
+
+
+def get_permissions_from_roles(roles, clean=False):
+    """
+    roles: list or QuerySet of UserRole objects
+    For given role(s), return a list of all allowed permissions. If clean=True,
+    return the permissions without the Django app prefix.
+    """
+    role_classes = [get_roleclass(ur.role_class) for ur in roles]
+    permissions_lists = [r.allow for r in role_classes]
+
+    # Flatten permissions list
+    all_permissions = list(set([item for sublist in permissions_lists for item in sublist]))
+
+    if clean:
+        # Remove the app prefix from all permissions
+        all_permissions_clean = [s.split('.')[1] for s in all_permissions]
+        return(all_permissions_clean)
+    else:
+        return(all_permissions)
