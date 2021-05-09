@@ -22,6 +22,10 @@ def get_roles(user, obj=None):
     return getters.get_roles(user, obj)
 
 
+def get_permissions_from_roles(roles, clean=False):
+    return getters.get_permissions_from_roles(roles, clean)
+
+
 def has_role(user, role_class=None, obj=None):
     return checkers.has_role(user, role_class, obj)
 
