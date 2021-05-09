@@ -32,7 +32,7 @@ def has_role(user, role_class=None, obj=None):
     if obj:
         # Filtering by object.
         ct_obj = ContentType.objects.get_for_model(obj)
-        query.filter(content_type=ct_obj.id, object_id=obj.id)
+        query = query.filter(content_type=ct_obj.id, object_id=obj.id)
 
     # Check if object belongs
     # to the role class.
