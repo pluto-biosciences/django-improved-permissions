@@ -12,6 +12,11 @@ from improved_permissions.utils import (get_permissions_list, get_roleclass,
                                         permission_to_string)
 
 
+class UserRoleManager(models.Manager):
+    def get_by_natural_key(self, user, role_class, content_type, object_id):
+        return self.get(user=user, role_class=role_class, content_type=content_type, object_id=content_type)
+
+
 class UserRole(models.Model):
     """
     UserRole
@@ -37,18 +42,25 @@ class UserRole(models.Model):
 
     role_class = models.CharField(max_length=256)
 
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
+    content_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE, null=True)
     object_id = models.PositiveIntegerField(null=True)
     obj = GenericForeignKey()
+
+    objects = UserRoleManager()
 
     class Meta:
         verbose_name = 'Role Instance'
         verbose_name_plural = 'Role Instances'
         unique_together = ('user', 'role_class', 'content_type', 'object_id')
 
+    def natural_key(self):
+        return (self.user, self.role_class, self.content_type, self.object_id)
+
     def __str__(self):
         role = get_roleclass(self.role_class)
-        output = '{user} is {role}'.format(user=self.user, role=role.get_verbose_name())
+        output = '{user} is {role}'.format(
+            user=self.user, role=role.get_verbose_name())
         if self.obj:
             output += ' of {obj}'.format(obj=self.obj)
         return output
@@ -95,9 +107,15 @@ class UserRole(models.Model):
                 # Put the access as "False" only for
                 # the permissions in deny list.
                 access = False if perm_s in self.role.deny else True
-            role_instances.append(RolePermission(role=self, permission=perm, access=access))
+            role_instances.append(RolePermission(
+                role=self, permission=perm, access=access))
 
         RolePermission.objects.bulk_create(role_instances)
+
+
+class RolePermissionManager(models.Manager):
+    def get_by_natural_key(self, role, permission):
+        return self.get(role=role, permission=permission)
 
 
 class RolePermission(models.Model):
@@ -128,6 +146,10 @@ class RolePermission(models.Model):
         on_delete=models.CASCADE,
         related_name='accesses'
     )
+
+    def natural_key(self):
+        return (self.role, self.permission)
+    natural_key.dependencies = ['improved_permissions.userrole']
 
     class Meta:
         unique_together = ('role', 'permission')
