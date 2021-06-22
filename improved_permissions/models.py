@@ -13,8 +13,14 @@ from improved_permissions.utils import (get_permissions_list, get_roleclass,
 
 
 class UserRoleManager(models.Manager):
-    def get_by_natural_key(self, user_id, role_class, content_type_id, object_id):
-        return self.get(user__id=user_id, role_class=role_class, content_type__id=content_type_id, object_id=object_id)
+    def get_by_natural_key(self, user_email, role_class, object_id, app_label, model):
+        return self.get(
+            user__email=user_email,
+            role_class=role_class,
+            object_id=object_id,
+            content_type=ContentType.objects.db_manager(
+                self.db).get_by_natural_key(app_label, model),
+        )
 
 
 class UserRole(models.Model):
@@ -55,7 +61,7 @@ class UserRole(models.Model):
         unique_together = ('user', 'role_class', 'content_type', 'object_id')
 
     def natural_key(self):
-        return (self.user.id, self.role_class, self.content_type.id, self.object_id)
+        return (self.user.email, self.role_class, self.object_id) + self.content_type.natural_key()
 
     def __str__(self):
         role = get_roleclass(self.role_class)
@@ -114,12 +120,11 @@ class UserRole(models.Model):
 
 
 class RolePermissionManager(models.Manager):
-    def get_by_natural_key(self, role_class, permission_natural_key):
+    def get_by_natural_key(self, role_class, app_label, model):
         return self.get(
             role__role_class=role_class,
-            permission__codename=permission_natural_key[0],
-            permission__app_label=permission_natural_key[1],
-            permission__model=permission_natural_key[2]
+            permission=Permission.objects.db_manager(
+                self.db).get_by_natural_key(app_label, model),
         )
 
 
@@ -155,8 +160,9 @@ class RolePermission(models.Model):
     objects = RolePermissionManager()
 
     def natural_key(self):
-        return (self.role.role_class, self.permission.natural_key())
-    natural_key.dependencies = ['improved_permissions.userrole']
+        return (self.role.role_class,) + self.permission.natural_key()
+    natural_key.dependencies = [
+        'improved_permissions.userrole', 'auth.permission']
 
     class Meta:
         unique_together = ('role', 'permission')
