@@ -82,7 +82,7 @@ class ShortcutsTest(TestCase):
 
     def test_assign_roles_allmodels(self):
         """ test if the roles using ALL_MODELS work fine """
-        assign_role(self.john, Coordenitor)
+        assign_role(self.john, Coordinator)
 
         # Trying to assign a non-object role using a object
         with self.assertRaises(InvalidRoleAssignment):
@@ -161,34 +161,44 @@ class ShortcutsTest(TestCase):
     def test_has_permission(self):
         """ test if the has_permission method works fine """
         assign_role(self.john, Teacher, self.bob)
-        self.assertTrue(has_permission(self.john, 'testapp1.add_user', self.bob))
-        self.assertFalse(has_permission(self.mike, 'testapp1.delete_user', self.bob))
+        self.assertTrue(has_permission(
+            self.john, 'testapp1.add_user', self.bob))
+        self.assertFalse(has_permission(
+            self.mike, 'testapp1.delete_user', self.bob))
 
         assign_role(self.mike, Secretary, self.bob)
-        self.assertTrue(has_permission(self.mike, 'testapp1.delete_user', self.bob))
-        self.assertFalse(has_permission(self.mike, 'testapp1.add_user', self.bob))
+        self.assertTrue(has_permission(
+            self.mike, 'testapp1.delete_user', self.bob))
+        self.assertFalse(has_permission(
+            self.mike, 'testapp1.add_user', self.bob))
 
         assign_role(self.bob, SubCoordinator)
         self.assertTrue(has_permission(self.bob, 'testapp1.change_user'))
-        self.assertTrue(has_permission(self.bob, 'testapp1.change_user', self.julie))
-        self.assertFalse(has_permission(self.bob, 'testapp1.add_user', self.julie))
+        self.assertTrue(has_permission(
+            self.bob, 'testapp1.change_user', self.julie))
+        self.assertFalse(has_permission(
+            self.bob, 'testapp1.add_user', self.julie))
 
         assign_role(self.julie, Coordinator)
         self.assertTrue(has_permission(self.julie, 'testapp1.add_user'))
-        self.assertTrue(has_permission(self.julie, 'testapp1.add_user', self.bob))
-        self.assertFalse(has_permission(self.julie, 'testapp1.change_user', self.bob))
+        self.assertTrue(has_permission(
+            self.julie, 'testapp1.add_user', self.bob))
+        self.assertFalse(has_permission(
+            self.julie, 'testapp1.change_user', self.bob))
 
         # john has both Advisor and Teacher now,
         # but Advisor has better ranking.
         assign_role(self.john, Advisor, self.bob)
-        self.assertTrue(has_permission(self.john, 'testapp1.delete_user', self.bob))
+        self.assertTrue(has_permission(
+            self.john, 'testapp1.delete_user', self.bob))
 
     def test_template_tags(self):
         """ test if template tags work fine """
         assign_role(self.julie, Coordinator)
 
         self.assertTrue(tg_has_perm(self.julie, 'testapp1.add_user', self.bob))
-        self.assertFalse(tg_has_perm(self.julie, 'testapp1.change_user', self.bob))
+        self.assertFalse(tg_has_perm(
+            self.julie, 'testapp1.change_user', self.bob))
 
         # Check for non-object related role.
         self.assertEqual(tg_get_role(self.julie), 'Coordinator')
@@ -229,38 +239,49 @@ class ShortcutsTest(TestCase):
         # Assign the role and try to use a permission denied by default.
         assign_role(self.john, Teacher, self.bob)
         assign_role(self.john, Teacher, self.julie)
-        self.assertFalse(has_permission(self.john, 'testapp1.delete_user', self.bob))
-        self.assertFalse(has_permission(self.john, 'testapp1.delete_user', self.julie))
+        self.assertFalse(has_permission(
+            self.john, 'testapp1.delete_user', self.bob))
+        self.assertFalse(has_permission(
+            self.john, 'testapp1.delete_user', self.julie))
 
         # Explicitly assign the permission using access=True and the object.
-        assign_permission(self.john, Teacher, 'testapp1.delete_user', True, self.bob)
+        assign_permission(self.john, Teacher,
+                          'testapp1.delete_user', True, self.bob)
 
         # Result: Only the specified object was affected.
-        self.assertTrue(has_permission(self.john, 'testapp1.delete_user', self.bob))
-        self.assertFalse(has_permission(self.john, 'testapp1.delete_user', self.julie))
+        self.assertTrue(has_permission(
+            self.john, 'testapp1.delete_user', self.bob))
+        self.assertFalse(has_permission(
+            self.john, 'testapp1.delete_user', self.julie))
 
         # Assign the role and try to use a permission allowed by default
         assign_role(self.mike, Teacher, self.bob)
         assign_role(self.mike, Teacher, self.julie)
-        self.assertTrue(has_permission(self.mike, 'testapp1.add_user', self.bob))
-        self.assertTrue(has_permission(self.mike, 'testapp1.add_user', self.julie))
+        self.assertTrue(has_permission(
+            self.mike, 'testapp1.add_user', self.bob))
+        self.assertTrue(has_permission(
+            self.mike, 'testapp1.add_user', self.julie))
 
         # Explicitly assign the permission using access=False but without an object.
         assign_permission(self.mike, Teacher, 'testapp1.add_user', False)
 
         # Result: All the user's role instances were affected
-        self.assertFalse(has_permission(self.mike, 'testapp1.add_user', self.bob))
-        self.assertFalse(has_permission(self.mike, 'testapp1.add_user', self.julie))
+        self.assertFalse(has_permission(
+            self.mike, 'testapp1.add_user', self.bob))
+        self.assertFalse(has_permission(
+            self.mike, 'testapp1.add_user', self.julie))
 
         # Trying to assign a wrong permission.
         with self.assertRaises(InvalidPermissionAssignment):
-            assign_permission(self.mike, Secretary, 'testapp1.add_user', access=False)
+            assign_permission(self.mike, Secretary,
+                              'testapp1.add_user', access=False)
 
         # Expliciting a permission to a role using ALL_MODELS.
         assign_role(self.julie, SubCoordinator)
         self.assertFalse(has_permission(self.julie, 'testapp1.delete_user'))
 
-        assign_permission(self.julie, SubCoordinator, 'testapp1.delete_user', access=True)
+        assign_permission(self.julie, SubCoordinator,
+                          'testapp1.delete_user', access=True)
         self.assertTrue(has_permission(self.julie, 'testapp1.delete_user'))
 
         # Other permissions are still False.
