@@ -1,6 +1,6 @@
 """ permissions models """
 from django.conf import settings
-from django.contrib.auth.models import Permission, User
+from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
@@ -13,9 +13,8 @@ from improved_permissions.utils import (get_permissions_list, get_roleclass,
 
 
 class UserRoleManager(models.Manager):
-    def get_by_natural_key(self, user_id, role_class, content_type, object_id):
-        user = User.objects.get(id=user_id)
-        return self.get(user=user, role_class=role_class, content_type=content_type, object_id=content_type)
+    def get_by_natural_key(self, user_id, role_class, content_type_id, object_id):
+        return self.get(user__id=user_id, role_class=role_class, content_type__id=content_type_id, object_id=object_id)
 
 
 class UserRole(models.Model):
@@ -56,7 +55,7 @@ class UserRole(models.Model):
         unique_together = ('user', 'role_class', 'content_type', 'object_id')
 
     def natural_key(self):
-        return (self.user.id, self.role_class, self.content_type, self.object_id)
+        return (self.user.id, self.role_class, self.content_type.id, self.object_id)
 
     def __str__(self):
         role = get_roleclass(self.role_class)
@@ -115,8 +114,8 @@ class UserRole(models.Model):
 
 
 class RolePermissionManager(models.Manager):
-    def get_by_natural_key(self, role, permission):
-        return self.get(role=role, permission=permission)
+    def get_by_natural_key(self, role_id, permission_id):
+        return self.get(role__id=role_id, permission__id=permission_id)
 
 
 class RolePermission(models.Model):
@@ -149,7 +148,7 @@ class RolePermission(models.Model):
     )
 
     def natural_key(self):
-        return (self.role, self.permission)
+        return (self.role.id, self.permission.id)
     natural_key.dependencies = ['improved_permissions.userrole']
 
     class Meta:
