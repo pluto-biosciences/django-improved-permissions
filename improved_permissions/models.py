@@ -147,6 +147,8 @@ class RolePermission(models.Model):
         related_name='accesses'
     )
 
+    objects = RolePermissionManager()
+
     def natural_key(self):
         return (self.role.id, self.permission.id)
     natural_key.dependencies = ['improved_permissions.userrole']
