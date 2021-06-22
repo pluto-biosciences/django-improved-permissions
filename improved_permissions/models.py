@@ -114,8 +114,13 @@ class UserRole(models.Model):
 
 
 class RolePermissionManager(models.Manager):
-    def get_by_natural_key(self, role_id, permission_id):
-        return self.get(role__id=role_id, permission__id=permission_id)
+    def get_by_natural_key(self, role_class, permission_natural_key):
+        return self.get(
+            role__role_class=role_class,
+            permission__codename=permission_natural_key[0],
+            permission__app_label=permission_natural_key[1],
+            permission__model=permission_natural_key[2]
+        )
 
 
 class RolePermission(models.Model):
@@ -150,7 +155,7 @@ class RolePermission(models.Model):
     objects = RolePermissionManager()
 
     def natural_key(self):
-        return (self.role.id, self.permission.id)
+        return (self.role.role_class, self.permission.natural_key())
     natural_key.dependencies = ['improved_permissions.userrole']
 
     class Meta:
