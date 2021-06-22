@@ -120,11 +120,11 @@ class UserRole(models.Model):
 
 
 class RolePermissionManager(models.Manager):
-    def get_by_natural_key(self, role_class, app_label, model):
+    def get_by_natural_key(self, role_class, codename, app_label, model):
         return self.get(
             role__role_class=role_class,
             permission=Permission.objects.db_manager(
-                self.db).get_by_natural_key(app_label, model),
+                self.db).get_by_natural_key(codename, app_label, model),
         )
 
 
