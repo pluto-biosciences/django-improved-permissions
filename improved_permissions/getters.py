@@ -87,6 +87,7 @@ def get_users(role_class=None, obj=None):
     # Return as a distinct QuerySet.
     return get_user_model().objects.filter(**kwargs).distinct()
 
+
 def get_objects(user, role_class=None, model=None):
     """
     Return the list of objects attached
@@ -127,7 +128,10 @@ def get_role(user, obj=None):
     Proxy method to be used when you sure that
     will have only one role class attached.
     """
-    return get_roles(user, obj)[0]
+    try:
+        return get_roles(user, obj)[0]
+    except IndexError:
+        return None
 
 
 def get_roles(user, obj=None):
@@ -158,7 +162,8 @@ def get_permissions_from_roles(roles, clean=False):
     permissions_lists = [r.allow for r in role_classes]
 
     # Flatten permissions list
-    all_permissions = list(set([item for sublist in permissions_lists for item in sublist]))
+    all_permissions = list(
+        set([item for sublist in permissions_lists for item in sublist]))
 
     if clean:
         # Remove the app prefix from all permissions
