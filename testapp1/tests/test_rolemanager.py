@@ -52,7 +52,7 @@ class RoleManagerTest(TestCase):
         new_ipc = {'MODULE': 'other_roles'}
         with self.settings(IMPROVED_PERMISSIONS_SETTINGS=new_ipc):
             autodiscover()
-            roles_list = RoleManager.get_roles()
+            roles_list = RoleManager.get_user_roles_strings()
             self.assertEqual(roles_list, [AnotherRole])
 
         # Testing the case if the dictionary does not exists.
@@ -111,4 +111,4 @@ class RoleManagerTest(TestCase):
             RoleManager.register_role(Advisor)
 
         # Checking list.
-        self.assertEqual(RoleManager.get_roles(), [Advisor])
+        self.assertEqual(RoleManager.get_user_roles_strings(), [Advisor])

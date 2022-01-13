@@ -62,7 +62,7 @@ class RoleManager(object):
         cls.__ROLE_CLASSES_LIST.append(new_class)
 
     @classmethod
-    def get_roles(cls):
+    def get_user_roles_strings(cls):
         """
         Return the list of
         all registered Role

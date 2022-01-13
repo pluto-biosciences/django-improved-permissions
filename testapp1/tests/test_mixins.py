@@ -180,8 +180,8 @@ class MixinsTest(TestCase):
         self.john.remove_role(Advisor)
         self.assertFalse(self.john.has_role(Advisor, self.bob))
 
-    def test_get_role(self):
-        """ test if the get_role and get_roles methods work fine """
+    def test_get_user_roles_strings(self):
+        """ test if the get_role and get_user_roles_strings methods work fine """
         self.book.assign_role(self.mike, Author)
 
         self.assertTrue(self.book.has_role(self.mike))
@@ -190,14 +190,14 @@ class MixinsTest(TestCase):
         # Check for single role class.
         self.assertEqual(self.mike.get_role(), Author)
         self.assertEqual(self.mike.get_role(self.book), Author)
-        self.assertEqual(self.book.get_role(self.mike), Author)  
+        self.assertEqual(self.book.get_role(self.mike), Author)
 
         self.mike.assign_role(Reviewer, self.book)
 
         # Check for multiple role class.
-        self.assertEqual(self.mike.get_roles(), [Author, Reviewer])
-        self.assertEqual(self.mike.get_roles(self.book), [Author, Reviewer])
-        self.assertEqual(self.book.get_roles(self.mike), [Author, Reviewer])
+        self.assertEqual(self.mike.get_user_roles_strings(), [Author, Reviewer])
+        self.assertEqual(self.mike.get_user_roles_strings(self.book), [Author, Reviewer])
+        self.assertEqual(self.book.get_user_roles_strings(self.mike), [Author, Reviewer])
 
     def test_remove_all(self):
         """ test if the remove_all shortcut works fine """

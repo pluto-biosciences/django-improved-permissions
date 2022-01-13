@@ -3,7 +3,7 @@ Shortcuts
 
 These functions are the heart of this app. Everything you need to do in your project is implemented in the ``shortcuts`` module.
 
-.. note:: Do not rush your project using the shortcuts directly. We have an easiest way to use these shorcuts using **mixins** in your models. Click here to check it out. 
+.. note:: Do not rush your project using the shortcuts directly. We have an easiest way to use these shorcuts using **mixins** in your models. Click here to check it out.
 
 
 Checkers
@@ -30,7 +30,7 @@ Assign the role to all users in the list.
 
 .. function:: remove_role(user, role_class, obj=None)
 
-Remove the role and your permissions of the object from the user. 
+Remove the role and your permissions of the object from the user.
 
 .. function:: remove_roles(users_list=None, role_class, obj=None)
 
@@ -44,7 +44,7 @@ Getters
 
 Get the unique role class of the user related to the object.
 
-.. function:: get_roles(user, obj=None)
+.. function:: get_user_roles_strings(user, obj=None)
 
 Get all role classes of the user related to the object.
 

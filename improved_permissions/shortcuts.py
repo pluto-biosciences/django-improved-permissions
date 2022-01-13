@@ -18,8 +18,8 @@ def get_role(user, obj=None):
     return getters.get_role(user, obj)
 
 
-def get_roles(user, obj=None):
-    return getters.get_roles(user, obj)
+def get_user_roles_strings(user, obj=None):
+    return getters.get_user_roles_strings(user, obj)
 
 
 def get_permissions_from_roles(roles, clean=False):

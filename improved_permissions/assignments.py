@@ -3,7 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from improved_permissions.exceptions import (InvalidPermissionAssignment,
                                              InvalidRoleAssignment)
-from improved_permissions.getters import get_roles, get_users
+from improved_permissions.getters import get_user_roles_strings, get_users
 from improved_permissions.models import RolePermission, UserRole
 from improved_permissions.roles import ALL_MODELS
 from improved_permissions.utils import (check_my_model, delete_from_cache,
@@ -49,7 +49,7 @@ def assign_roles(users_list, role_class, obj=None):
     # attached using the same User instance.
     if obj and is_unique_together(obj):
         for user in users_set:
-            has_user = get_roles(user=user, obj=obj)
+            has_user = get_user_roles_strings(user=user, obj=obj)
             if has_user:
                 raise InvalidRoleAssignment(
                     'The user "%s" already has a role attached '

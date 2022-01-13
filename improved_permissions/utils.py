@@ -86,7 +86,7 @@ def get_roleclass(role_class):
     by string or by itself.
     """
     from improved_permissions.roles import RoleManager
-    roles_list = RoleManager.get_roles()
+    roles_list = RoleManager.get_user_roles_strings()
 
     if isinstance(role_class, str):
         # Trying to get the role class
