@@ -123,32 +123,43 @@ def get_objects(user, role_class=None, model=None):
     return list(result)
 
 
-def get_role(user, obj=None):
+def get_userroles(user, obj=None):
     """
-    Proxy method to be used when you sure that
-    will have only one role class attached.
-    """
-    try:
-        return get_roles(user, obj)[0]
-    except IndexError:
-        return None
+    Return a QuerySet of UserRole objects associated to "user".
 
-
-def get_roles(user, obj=None):
-    """
-    Return a list of role classes
-    that is attached to "user".
-
-    If "obj" is provided, the object
-    must be attached as well.
+    If "obj" is provided, the QuerySet is filtered by "obj" as well.
     """
     query = UserRole.objects.filter(user=user)
     if obj:
         ct_obj = ContentType.objects.get_for_model(obj)
         query = query.filter(content_type=ct_obj.id, object_id=obj.id)
 
-    # Transform the string representations
-    # into role classes and return as list.
+    return query
+
+
+def get_user_role_string(user, obj=None):
+    """
+    Proxy method to be used when you sure that
+    will have only one role class attached.
+    """
+    try:
+        return get_user_roles_strings(user, obj)[0]
+    except IndexError:
+        return None
+
+
+def get_user_roles_strings(user, obj=None):
+    """
+    Return a list of role classes associated to "user".
+
+    If "obj" is provided, the list is filtered by "obj" as well.
+    """
+    query = UserRole.objects.filter(user=user)
+    if obj:
+        ct_obj = ContentType.objects.get_for_model(obj)
+        query = query.filter(content_type=ct_obj.id, object_id=obj.id)
+
+    # Transform the string representations into role classes and return as list
     return [get_roleclass(ur_obj.role_class) for ur_obj in query]
 
 
