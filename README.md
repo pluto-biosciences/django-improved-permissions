@@ -11,6 +11,13 @@
 
 This is a fork of the original Django Improved Permissions package [here](https://github.com/s-sys/django-improved-permissions) that is maintained by Pluto Biosciences.
 
+### Compatibility
+
+| Package version | Django           | Python      |
+|-----------------|------------------|-------------|
+| 0.3.x (this fork) | 4.2 LTS, 5.2 LTS (best-effort 6.0) | 3.10 – 3.13 |
+| 0.2.x (and prior) | 2.0 – 3.x        | 3.6+        |
+
 ---
 
 Django Improved Permissions (DIP) is a Django application made to make Django's default permission system more robust. Here are some highlights:
