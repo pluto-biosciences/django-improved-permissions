@@ -80,9 +80,9 @@ class UserRole(models.Model):
                 {'role_class': 'This string representation does not exist as a Role class.'}
             )
 
-    def save(self, *args, **kwargs):  # pylint: disable=arguments-differ,unused-argument
+    def save(self, *args, **kwargs):
         self.clean()
-        super().save()
+        super().save(*args, **kwargs)
 
         # non-object roles does not have specific
         # permissions auto created.
